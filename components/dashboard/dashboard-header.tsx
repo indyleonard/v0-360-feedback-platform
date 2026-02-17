@@ -3,10 +3,13 @@
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Bell, Search } from "lucide-react"
+import { Bell, Search, Play } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { useWalkthrough } from "@/components/dashboard/walkthrough-context"
 
 export function DashboardHeader() {
+  const { open } = useWalkthrough()
+
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b border-border bg-background px-4">
       <SidebarTrigger />
@@ -24,6 +27,16 @@ export function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={open}
+          className="hidden gap-1.5 text-muted-foreground hover:text-foreground sm:flex"
+        >
+          <Play className="size-3.5" />
+          <span className="text-xs">Tour</span>
+        </Button>
+        <Separator orientation="vertical" className="hidden h-6 sm:block" />
         <Button variant="ghost" size="icon" className="relative" aria-label="Notifications">
           <Bell className="size-4 text-foreground" />
           <Badge className="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-primary p-0 text-[10px] text-primary-foreground">
