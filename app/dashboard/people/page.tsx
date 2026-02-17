@@ -24,16 +24,16 @@ import {
 import { Search, Filter, Download, Link as LinkIcon, ExternalLink, Copy } from "lucide-react"
 
 const people = [
-  { name: "Nomsa Dlamini", initials: "ND", role: "CEO", department: "Executive", cyclesCompleted: 4, avgScore: 4.6, anonLink: "fb.co/anon-nd-7x9", status: "active" },
-  { name: "James van der Merwe", initials: "JM", role: "VP Engineering", department: "Engineering", cyclesCompleted: 4, avgScore: 4.3, anonLink: "fb.co/anon-jm-3k2", status: "active" },
-  { name: "Lerato Mokoena", initials: "LM", role: "Engineering Manager", department: "Engineering", cyclesCompleted: 3, avgScore: 4.5, anonLink: "fb.co/anon-lm-8p1", status: "active" },
-  { name: "Sarah Williams", initials: "SW", role: "Engineering Manager", department: "Engineering", cyclesCompleted: 4, avgScore: 4.1, anonLink: "fb.co/anon-sw-5n4", status: "active" },
-  { name: "Pieter Botha", initials: "PB", role: "VP Marketing", department: "Marketing", cyclesCompleted: 4, avgScore: 4.4, anonLink: "fb.co/anon-pb-2m7", status: "active" },
-  { name: "Fatima Osman", initials: "FO", role: "Marketing Manager", department: "Marketing", cyclesCompleted: 3, avgScore: 4.7, anonLink: "fb.co/anon-fo-6j3", status: "active" },
-  { name: "David Chen", initials: "DC", role: "Senior Engineer", department: "Engineering", cyclesCompleted: 2, avgScore: 4.2, anonLink: "fb.co/anon-dc-1r8", status: "active" },
-  { name: "Priya Naidoo", initials: "PN", role: "Senior Engineer", department: "Engineering", cyclesCompleted: 3, avgScore: 4.8, anonLink: "fb.co/anon-pn-4t6", status: "active" },
-  { name: "Thabo Sithole", initials: "TS", role: "Software Engineer", department: "Engineering", cyclesCompleted: 1, avgScore: 0, anonLink: "fb.co/anon-ts-9w5", status: "new" },
-  { name: "Ravi Govender", initials: "RG", role: "Operations Manager", department: "Operations", cyclesCompleted: 4, avgScore: 4.0, anonLink: "fb.co/anon-rg-7h2", status: "active" },
+  { name: "Nomsa Dlamini", initials: "ND", role: "CEO", department: "Executive", cyclesCompleted: 4, avgScore: 4.6, anonLink: "/feedback/nd-7x9k", status: "active" },
+  { name: "James van der Merwe", initials: "JM", role: "VP Engineering", department: "Engineering", cyclesCompleted: 4, avgScore: 4.3, anonLink: "/feedback/jm-3k2p", status: "active" },
+  { name: "Lerato Mokoena", initials: "LM", role: "Engineering Manager", department: "Engineering", cyclesCompleted: 3, avgScore: 4.5, anonLink: "/feedback/lm-8p1q", status: "active" },
+  { name: "Sarah Williams", initials: "SW", role: "Engineering Manager", department: "Engineering", cyclesCompleted: 4, avgScore: 4.1, anonLink: "/feedback/sw-5n4r", status: "active" },
+  { name: "Pieter Botha", initials: "PB", role: "VP Marketing", department: "Marketing", cyclesCompleted: 4, avgScore: 4.4, anonLink: "/feedback/pb-2m7s", status: "active" },
+  { name: "Fatima Osman", initials: "FO", role: "Marketing Manager", department: "Marketing", cyclesCompleted: 3, avgScore: 4.7, anonLink: "/feedback/fo-6j3t", status: "active" },
+  { name: "David Chen", initials: "DC", role: "Senior Engineer", department: "Engineering", cyclesCompleted: 2, avgScore: 4.2, anonLink: "/feedback/dc-1r8u", status: "active" },
+  { name: "Priya Naidoo", initials: "PN", role: "Senior Engineer", department: "Engineering", cyclesCompleted: 3, avgScore: 4.8, anonLink: "/feedback/pn-4t6v", status: "active" },
+  { name: "Thabo Sithole", initials: "TS", role: "Software Engineer", department: "Engineering", cyclesCompleted: 1, avgScore: 0, anonLink: "/feedback/ts-9w5x", status: "new" },
+  { name: "Ravi Govender", initials: "RG", role: "Operations Manager", department: "Operations", cyclesCompleted: 4, avgScore: 4.0, anonLink: "/feedback/rg-7h2y", status: "active" },
 ]
 
 export default function PeoplePage() {

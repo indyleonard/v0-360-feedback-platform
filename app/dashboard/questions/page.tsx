@@ -32,6 +32,9 @@ const questionSets = [
     role: "Engineering Manager",
     competencies: ["Technical Leadership", "People Development", "Strategic Thinking", "Communication"],
     status: "approved",
+    jobDescSource: "SharePoint HR Library",
+    department: "Engineering",
+    seniority: "Mid-Senior",
     questions: [
       {
         id: 1,
@@ -71,6 +74,9 @@ const questionSets = [
     role: "Product Manager",
     competencies: ["Product Strategy", "Stakeholder Management", "Data-Driven Decision Making", "Cross-functional Collaboration"],
     status: "review",
+    jobDescSource: "M365 Employee Profile",
+    department: "Product",
+    seniority: "Senior",
     questions: [
       {
         id: 5,
@@ -110,6 +116,9 @@ const questionSets = [
     role: "Senior Software Engineer",
     competencies: ["Code Quality", "Mentorship", "System Design", "Initiative"],
     status: "generating",
+    jobDescSource: "M365 Employee Profile",
+    department: "Engineering",
+    seniority: "Senior",
     questions: [],
   },
 ]
@@ -164,6 +173,7 @@ export default function QuestionsPage() {
               <CardTitle className="text-card-foreground">{currentSet.role}</CardTitle>
               <CardDescription>
                 {currentSet.questions.length} questions across {currentSet.competencies.length} competencies
+                {" | "}JD source: {(currentSet as any).jobDescSource || "Not set"} | {(currentSet as any).department} | {(currentSet as any).seniority}
               </CardDescription>
             </div>
             <Badge

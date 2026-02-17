@@ -26,15 +26,24 @@ import {
   Radar,
   Legend,
 } from "recharts"
-import { Download, FileText, Brain, AlertTriangle, TrendingUp, Shield } from "lucide-react"
+import { Download, Brain, AlertTriangle, TrendingUp, Shield, Lock, CheckCircle2 } from "lucide-react"
+
+// Category-level anonymity gating
+const feedbackCategories = [
+  { name: "Manager", respondents: 1, threshold: 3, gated: true },
+  { name: "Peers", respondents: 5, threshold: 3, gated: false },
+  { name: "Direct Reports", respondents: 4, threshold: 3, gated: false },
+  { name: "Cross-functional", respondents: 2, threshold: 3, gated: true },
+  { name: "Self", respondents: 1, threshold: 1, gated: false },
+]
 
 const competencyData = [
-  { competency: "Leadership", self: 4.2, peers: 3.8, manager: 4.0, reports: 4.5, benchmark: 4.1 },
-  { competency: "Communication", self: 4.5, peers: 4.2, manager: 4.3, reports: 4.1, benchmark: 4.0 },
-  { competency: "Technical", self: 3.8, peers: 4.1, manager: 3.9, reports: 4.3, benchmark: 3.9 },
-  { competency: "Strategy", self: 4.0, peers: 3.6, manager: 4.2, reports: 3.9, benchmark: 3.8 },
-  { competency: "Teamwork", self: 4.3, peers: 4.5, manager: 4.1, reports: 4.6, benchmark: 4.2 },
-  { competency: "Innovation", self: 3.9, peers: 3.7, manager: 3.8, reports: 4.0, benchmark: 3.7 },
+  { competency: "Leadership", self: 4.2, peers: 3.8, reports: 4.5, benchmark: 4.1 },
+  { competency: "Communication", self: 4.5, peers: 4.2, reports: 4.1, benchmark: 4.0 },
+  { competency: "Technical", self: 3.8, peers: 4.1, reports: 4.3, benchmark: 3.9 },
+  { competency: "Strategy", self: 4.0, peers: 3.6, reports: 3.9, benchmark: 3.8 },
+  { competency: "Teamwork", self: 4.3, peers: 4.5, reports: 4.6, benchmark: 4.2 },
+  { competency: "Innovation", self: 3.9, peers: 3.7, reports: 4.0, benchmark: 3.7 },
 ]
 
 const departmentScores = [
@@ -59,15 +68,19 @@ const aiNarrative = {
   subject: "Lerato Mokoena",
   role: "Engineering Manager",
   cycle: "Q1 2026 Leadership 360",
-  summary: `Lerato demonstrates consistently strong leadership capabilities, particularly in team collaboration (4.5/5) and communication (4.3/5). Direct reports rate her exceptionally well on approachability and mentorship, reflecting her investment in people development.
+  includedCategories: ["Self", "Peers", "Direct Reports"],
+  excludedCategories: ["Manager", "Cross-functional"],
+  summary: `Lerato demonstrates consistently strong leadership capabilities, particularly in team collaboration (4.5/5 from peers) and communication (4.2/5 from peers). Direct reports rate her exceptionally well on approachability and mentorship, reflecting her investment in people development.
 
 Areas for continued growth include strategic thinking, where peer feedback suggests opportunities to contribute more actively to cross-departmental planning. Her technical competency remains strong, though the gap between self-assessment (3.8) and direct report ratings (4.3) suggests she may undervalue her technical influence.
 
-Compared to the Engineering Manager benchmark cohort, Lerato exceeds expectations in 4 of 6 competency areas, placing her in the top quartile for her role level.`,
+Compared to the Engineering Manager benchmark cohort, Lerato exceeds expectations in 4 of 6 competency areas, placing her in the top quartile for her role level.
+
+Note: Manager and Cross-functional categories were excluded from this report due to insufficient respondent volume (below the 3-response anonymity threshold). These categories will be included once the minimum response count is met.`,
   biasFlags: [
     {
       type: "Halo Effect",
-      description: "High correlation across all reviewer dimensions for 2 respondents may indicate generalised positive sentiment rather than specific competency assessment.",
+      description: "High correlation across all reviewer dimensions for 2 peer respondents may indicate generalised positive sentiment rather than specific competency assessment.",
       severity: "low",
     },
   ],
@@ -83,7 +96,7 @@ export default function ReportsPage() {
         <div>
           <h1 className="text-2xl font-bold text-foreground">Reports & Analytics</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            AI-generated narratives, competency analytics, and bias-checked results.
+            AI-generated narratives with per-category anonymity gating. Feedback categories require 3+ respondents before data is visible.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -103,6 +116,50 @@ export default function ReportsPage() {
           </Button>
         </div>
       </div>
+
+      {/* Category Anonymity Status */}
+      <Card className="mb-6 border-border bg-card">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm text-card-foreground flex items-center gap-2">
+            <Shield className="size-4 text-primary" />
+            Category Anonymity Status -- {aiNarrative.subject}
+          </CardTitle>
+          <CardDescription>
+            Each feedback category requires a minimum of 3 respondents before results are included in reports. This protects reviewer anonymity per POPIA requirements.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 sm:grid-cols-5">
+            {feedbackCategories.map((cat) => (
+              <div
+                key={cat.name}
+                className={`flex items-center gap-3 rounded-lg border p-3 ${
+                  cat.gated
+                    ? "border-warning/20 bg-warning/[0.03]"
+                    : "border-success/20 bg-success/[0.03]"
+                }`}
+              >
+                {cat.gated ? (
+                  <Lock className="size-4 text-warning shrink-0" />
+                ) : (
+                  <CheckCircle2 className="size-4 text-success shrink-0" />
+                )}
+                <div>
+                  <p className="text-xs font-semibold text-foreground">{cat.name}</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    {cat.respondents}/{cat.threshold} responses
+                  </p>
+                </div>
+                {cat.gated && (
+                  <Badge variant="outline" className="ml-auto text-[9px] border-warning/20 bg-warning/10 text-warning">
+                    Gated
+                  </Badge>
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       <Tabs defaultValue="narrative">
         <TabsList>
@@ -124,7 +181,7 @@ export default function ReportsPage() {
                         AI Narrative Summary
                       </CardTitle>
                       <CardDescription>
-                        {aiNarrative.subject} - {aiNarrative.role} | {aiNarrative.cycle}
+                        {aiNarrative.subject} -- {aiNarrative.role} | {aiNarrative.cycle}
                       </CardDescription>
                     </div>
                     <Badge className="bg-primary/10 text-primary border-primary/20" variant="outline">
@@ -133,6 +190,31 @@ export default function ReportsPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
+                  {/* Included/excluded categories notice */}
+                  <div className="mb-4 flex flex-wrap gap-4 rounded-lg border border-border bg-muted/50 p-3">
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-success mb-1">Included Categories</p>
+                      <div className="flex flex-wrap gap-1">
+                        {aiNarrative.includedCategories.map((c) => (
+                          <Badge key={c} variant="outline" className="text-[10px] border-success/20 bg-success/10 text-success">
+                            {c}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-warning mb-1">Excluded (below threshold)</p>
+                      <div className="flex flex-wrap gap-1">
+                        {aiNarrative.excludedCategories.map((c) => (
+                          <Badge key={c} variant="outline" className="text-[10px] border-warning/20 bg-warning/10 text-warning gap-1">
+                            <Lock className="size-2.5" />
+                            {c}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="prose prose-sm max-w-none text-card-foreground">
                     {aiNarrative.summary.split("\n\n").map((paragraph, i) => (
                       <p key={i} className="text-sm leading-relaxed text-card-foreground mb-4 last:mb-0">
@@ -243,7 +325,9 @@ export default function ReportsPage() {
             <Card className="border-border bg-card">
               <CardHeader>
                 <CardTitle className="text-card-foreground">Competency Scores by Source</CardTitle>
-                <CardDescription>Self, peers, manager, and direct reports compared to benchmark</CardDescription>
+                <CardDescription>
+                  Self, peers, and direct reports (manager and cross-functional categories gated)
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
@@ -263,10 +347,16 @@ export default function ReportsPage() {
                       <Legend wrapperStyle={{ fontSize: "12px" }} />
                       <Bar dataKey="self" fill="oklch(0.55 0.14 190)" name="Self" radius={[0, 2, 2, 0]} />
                       <Bar dataKey="peers" fill="oklch(0.68 0.16 165)" name="Peers" radius={[0, 2, 2, 0]} />
-                      <Bar dataKey="manager" fill="oklch(0.45 0.08 230)" name="Manager" radius={[0, 2, 2, 0]} />
                       <Bar dataKey="reports" fill="oklch(0.75 0.12 180)" name="Direct Reports" radius={[0, 2, 2, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
+                </div>
+                {/* Gated categories notice */}
+                <div className="mt-4 flex items-center gap-2 rounded-lg border border-warning/20 bg-warning/5 p-2.5">
+                  <Lock className="size-3.5 text-warning shrink-0" />
+                  <p className="text-xs text-muted-foreground">
+                    Manager and Cross-functional categories are hidden due to insufficient respondent volume ({'<'}3 responses). This prevents individual reviewer identification.
+                  </p>
                 </div>
               </CardContent>
             </Card>

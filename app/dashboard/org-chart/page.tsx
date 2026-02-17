@@ -12,12 +12,11 @@ import {
   ChevronDown,
   ChevronRight,
   Users,
-  Mail,
-  MessageSquare,
-  Calendar,
   Sparkles,
   CheckCircle2,
   Network,
+  Plus,
+  X,
 } from "lucide-react"
 
 interface OrgNode {
@@ -25,9 +24,8 @@ interface OrgNode {
   name: string
   role: string
   department: string
-  email: string
   initials: string
-  interactionScore: number
+  jobDescSource?: string
   children?: OrgNode[]
 }
 
@@ -36,31 +34,28 @@ const orgData: OrgNode = {
   name: "Nomsa Dlamini",
   role: "CEO",
   department: "Executive",
-  email: "nomsa@company.co.za",
   initials: "ND",
-  interactionScore: 0,
+  jobDescSource: "M365 Profile",
   children: [
     {
       id: "2",
       name: "James van der Merwe",
       role: "VP Engineering",
       department: "Engineering",
-      email: "james@company.co.za",
       initials: "JM",
-      interactionScore: 92,
+      jobDescSource: "M365 Profile",
       children: [
         {
           id: "5",
           name: "Lerato Mokoena",
           role: "Engineering Manager",
           department: "Engineering",
-          email: "lerato@company.co.za",
           initials: "LM",
-          interactionScore: 88,
+          jobDescSource: "SharePoint HR",
           children: [
-            { id: "9", name: "David Chen", role: "Senior Engineer", department: "Engineering", email: "david@company.co.za", initials: "DC", interactionScore: 76 },
-            { id: "10", name: "Priya Naidoo", role: "Senior Engineer", department: "Engineering", email: "priya@company.co.za", initials: "PN", interactionScore: 81 },
-            { id: "11", name: "Thabo Sithole", role: "Software Engineer", department: "Engineering", email: "thabo@company.co.za", initials: "TS", interactionScore: 65 },
+            { id: "9", name: "David Chen", role: "Senior Engineer", department: "Engineering", initials: "DC", jobDescSource: "M365 Profile" },
+            { id: "10", name: "Priya Naidoo", role: "Senior Engineer", department: "Engineering", initials: "PN", jobDescSource: "M365 Profile" },
+            { id: "11", name: "Thabo Sithole", role: "Software Engineer", department: "Engineering", initials: "TS", jobDescSource: "M365 Profile" },
           ],
         },
         {
@@ -68,12 +63,11 @@ const orgData: OrgNode = {
           name: "Sarah Williams",
           role: "Engineering Manager",
           department: "Engineering",
-          email: "sarah@company.co.za",
           initials: "SW",
-          interactionScore: 85,
+          jobDescSource: "SharePoint HR",
           children: [
-            { id: "12", name: "Amir Patel", role: "Senior Engineer", department: "Engineering", email: "amir@company.co.za", initials: "AP", interactionScore: 72 },
-            { id: "13", name: "Zanele Khumalo", role: "Software Engineer", department: "Engineering", email: "zanele@company.co.za", initials: "ZK", interactionScore: 68 },
+            { id: "12", name: "Amir Patel", role: "Senior Engineer", department: "Engineering", initials: "AP", jobDescSource: "M365 Profile" },
+            { id: "13", name: "Zanele Khumalo", role: "Software Engineer", department: "Engineering", initials: "ZK", jobDescSource: "M365 Profile" },
           ],
         },
       ],
@@ -83,18 +77,16 @@ const orgData: OrgNode = {
       name: "Pieter Botha",
       role: "VP Marketing",
       department: "Marketing",
-      email: "pieter@company.co.za",
       initials: "PB",
-      interactionScore: 78,
+      jobDescSource: "M365 Profile",
       children: [
         {
           id: "7",
           name: "Fatima Osman",
           role: "Marketing Manager",
           department: "Marketing",
-          email: "fatima@company.co.za",
           initials: "FO",
-          interactionScore: 84,
+          jobDescSource: "SharePoint HR",
         },
       ],
     },
@@ -103,39 +95,44 @@ const orgData: OrgNode = {
       name: "Lindiwe Mthembu",
       role: "VP Operations",
       department: "Operations",
-      email: "lindiwe@company.co.za",
       initials: "LT",
-      interactionScore: 71,
+      jobDescSource: "M365 Profile",
       children: [
         {
           id: "8",
           name: "Ravi Govender",
           role: "Operations Manager",
           department: "Operations",
-          email: "ravi@company.co.za",
           initials: "RG",
-          interactionScore: 79,
+          jobDescSource: "SharePoint HR",
         },
       ],
     },
   ],
 }
 
-// Reviewer suggestions based on interaction metadata
+// Privacy-safe reviewer suggestions -- NO raw interaction scores or frequencies
 const reviewerSuggestions = [
   {
     employee: "Lerato Mokoena",
     initials: "LM",
     role: "Engineering Manager",
     suggestedReviewers: [
-      { name: "James van der Merwe", initials: "JM", reason: "Direct manager, 42 meetings last quarter", score: 92, source: "Teams" },
-      { name: "Sarah Williams", initials: "SW", reason: "Peer manager, 28 shared threads", score: 85, source: "Outlook" },
-      { name: "David Chen", initials: "DC", reason: "Direct report, daily standups", score: 88, source: "Teams" },
-      { name: "Priya Naidoo", initials: "PN", reason: "Direct report, 15 code review interactions", score: 81, source: "Teams" },
-      { name: "Fatima Osman", initials: "FO", reason: "Cross-functional partner, 8 project collaborations", score: 67, source: "Outlook" },
+      { name: "James van der Merwe", initials: "JM", relationship: "Direct manager", type: "Manager" as const },
+      { name: "Sarah Williams", initials: "SW", relationship: "Peer manager, frequently collaborates", type: "Peer" as const },
+      { name: "David Chen", initials: "DC", relationship: "Direct report", type: "Direct Report" as const },
+      { name: "Priya Naidoo", initials: "PN", relationship: "Direct report", type: "Direct Report" as const },
+      { name: "Fatima Osman", initials: "FO", relationship: "Cross-functional partner", type: "Cross-functional" as const },
     ],
   },
 ]
+
+const relationshipColors: Record<string, string> = {
+  Manager: "bg-chart-1/10 text-chart-1 border-chart-1/20",
+  Peer: "bg-chart-2/10 text-chart-2 border-chart-2/20",
+  "Direct Report": "bg-chart-4/10 text-chart-4 border-chart-4/20",
+  "Cross-functional": "bg-chart-5/10 text-chart-5 border-chart-5/20",
+}
 
 function OrgTreeNode({ node, depth = 0 }: { node: OrgNode; depth?: number }) {
   const [expanded, setExpanded] = useState(depth < 2)
@@ -171,11 +168,10 @@ function OrgTreeNode({ node, depth = 0 }: { node: OrgNode; depth?: number }) {
           {node.department}
         </Badge>
 
-        {node.interactionScore > 0 && (
-          <div className="hidden items-center gap-1 text-xs text-muted-foreground sm:flex">
-            <MessageSquare className="size-3" />
-            <span className="font-mono">{node.interactionScore}</span>
-          </div>
+        {node.jobDescSource && (
+          <span className="hidden text-[10px] text-muted-foreground/60 lg:block">
+            JD: {node.jobDescSource}
+          </span>
         )}
       </div>
 
@@ -199,13 +195,13 @@ export default function OrgChartPage() {
         <div>
           <h1 className="text-2xl font-bold text-foreground">Org Chart</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Live org structure synced via Microsoft Graph. Interaction scores from Teams & Outlook.
+            Live org structure synced via Microsoft Graph. Job descriptions feed AI question generation.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5">
+          <div className="flex items-center gap-2 rounded-md border border-success/20 bg-success/5 px-3 py-1.5">
             <div className="size-2 rounded-full bg-success" />
-            <span className="text-xs font-medium text-card-foreground">Last sync: 2 min ago</span>
+            <span className="text-xs font-medium text-foreground">Synced 2 min ago</span>
           </div>
           <Button variant="outline" className="gap-2">
             <RefreshCcw className="size-4" />
@@ -244,7 +240,7 @@ export default function OrgChartPage() {
           </Card>
         </div>
 
-        {/* Reviewer Suggestions */}
+        {/* AI Reviewer Suggestions (privacy-safe) */}
         <div className="lg:col-span-2">
           <Card className="border-border bg-card">
             <CardHeader>
@@ -253,7 +249,7 @@ export default function OrgChartPage() {
                 AI Reviewer Suggestions
               </CardTitle>
               <CardDescription>
-                Based on interaction metadata from Microsoft 365
+                Based on org proximity and collaboration patterns. Interaction metadata is used for suggestions only and is never stored or exposed.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -271,57 +267,51 @@ export default function OrgChartPage() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-2">
                     {suggestion.suggestedReviewers.map((reviewer) => (
                       <div
                         key={reviewer.name}
-                        className="flex items-start gap-3 rounded-lg border border-border bg-background p-3"
+                        className="flex items-center gap-3 rounded-lg border border-border bg-background p-3"
                       >
-                        <Avatar className="size-7 mt-0.5">
+                        <Avatar className="size-7">
                           <AvatarFallback className="bg-muted text-muted-foreground text-xs">
                             {reviewer.initials}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm font-medium text-foreground">{reviewer.name}</p>
-                            <div className="flex items-center gap-1">
-                              <span className="text-xs font-mono text-primary font-semibold">
-                                {reviewer.score}%
-                              </span>
-                            </div>
-                          </div>
-                          <p className="text-xs text-muted-foreground">{reviewer.reason}</p>
-                          <div className="mt-1 flex items-center gap-2">
-                            <Badge variant="outline" className="text-[10px] py-0 px-1.5">
-                              {reviewer.source === "Teams" ? (
-                                <span className="flex items-center gap-1">
-                                  <MessageSquare className="size-2.5" />
-                                  Teams
-                                </span>
-                              ) : (
-                                <span className="flex items-center gap-1">
-                                  <Mail className="size-2.5" />
-                                  Outlook
-                                </span>
-                              )}
-                            </Badge>
-                          </div>
+                          <p className="text-sm font-medium text-foreground">{reviewer.name}</p>
+                          <p className="text-xs text-muted-foreground">{reviewer.relationship}</p>
                         </div>
-                        <Button size="sm" variant="ghost" className="size-7 p-0 shrink-0" aria-label="Select reviewer">
-                          <CheckCircle2 className="size-4 text-success" />
-                        </Button>
+                        <Badge variant="outline" className={`text-[10px] shrink-0 ${relationshipColors[reviewer.type]}`}>
+                          {reviewer.type}
+                        </Badge>
+                        <div className="flex items-center gap-1">
+                          <Button size="sm" variant="ghost" className="size-7 p-0" aria-label="Accept reviewer">
+                            <CheckCircle2 className="size-4 text-success" />
+                          </Button>
+                          <Button size="sm" variant="ghost" className="size-7 p-0" aria-label="Dismiss reviewer">
+                            <X className="size-4 text-muted-foreground" />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
 
                   <div className="mt-4 flex items-center justify-between">
                     <span className="text-xs text-muted-foreground">
-                      5 of 12 suggested reviewers shown
+                      5 suggested reviewers based on collaboration signals
                     </span>
                     <Button variant="outline" size="sm" className="text-xs">
-                      View All Suggestions
+                      View All
                     </Button>
+                  </div>
+
+                  {/* Privacy notice */}
+                  <div className="mt-4 rounded-lg border border-border bg-muted/50 p-3">
+                    <p className="text-[10px] text-muted-foreground leading-relaxed">
+                      Suggestions are derived from anonymised interaction metadata (meeting frequency, email volume) from Teams and Exchange. 
+                      This metadata is processed in-memory for suggestion generation only and is never stored long-term or exposed to users.
+                    </p>
                   </div>
                 </div>
               ))}

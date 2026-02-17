@@ -40,7 +40,7 @@ const anonymousFeedback = [
     recentCount: 3,
     lastReceived: "2 hours ago",
     sentiment: "positive",
-    link: "fb.comotion.us/anon/lm-8p1",
+    link: "/feedback/lm-8p1q",
   },
   {
     id: 2,
@@ -52,7 +52,7 @@ const anonymousFeedback = [
     recentCount: 5,
     lastReceived: "1 day ago",
     sentiment: "mixed",
-    link: "fb.comotion.us/anon/jm-3k2",
+    link: "/feedback/jm-3k2p",
   },
   {
     id: 3,
@@ -64,7 +64,7 @@ const anonymousFeedback = [
     recentCount: 2,
     lastReceived: "3 days ago",
     sentiment: "neutral",
-    link: "fb.comotion.us/anon/ts-9w5",
+    link: "/feedback/ts-9w5x",
   },
   {
     id: 4,
@@ -76,7 +76,7 @@ const anonymousFeedback = [
     recentCount: 1,
     lastReceived: "5 days ago",
     sentiment: "positive",
-    link: "fb.comotion.us/anon/fo-6j3",
+    link: "/feedback/fo-6j3t",
   },
   {
     id: 5,
@@ -88,7 +88,7 @@ const anonymousFeedback = [
     recentCount: 1,
     lastReceived: "1 week ago",
     sentiment: "neutral",
-    link: "fb.comotion.us/anon/dc-1r8",
+    link: "/feedback/dc-1r8u",
   },
 ]
 

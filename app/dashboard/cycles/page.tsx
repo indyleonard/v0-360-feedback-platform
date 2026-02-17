@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   Plus,
   Send,
@@ -35,6 +36,10 @@ import {
   Brain,
   CheckCircle2,
   AlertCircle,
+  ArrowRight,
+  UserCheck,
+  Sparkles,
+  BarChart3,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -43,13 +48,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-const allCycles = [
+// The 6-stage pipeline from the scope doc
+const pipelineStages = [
+  { id: "nomination", label: "Nomination", icon: Users, description: "Employee self-nominates reviewers" },
+  { id: "ai-suggestions", label: "AI Suggestions", icon: Sparkles, description: "System suggests reviewers from interaction metadata" },
+  { id: "manager-approval", label: "Manager Approval", icon: UserCheck, description: "Manager reviews and approves reviewer list" },
+  { id: "distribution", label: "Distribution", icon: Send, description: "Questionnaires sent via Teams and email" },
+  { id: "collection", label: "Collection", icon: Clock, description: "Automated reminders for pending reviewers" },
+  { id: "reporting", label: "Reporting", icon: BarChart3, description: "Results aggregated and delivered" },
+]
+
+const cycles = [
   {
     id: 1,
     name: "Q1 2026 Leadership 360",
     description: "Annual leadership assessment for all director-level and above",
     department: "All Departments",
-    status: "active",
+    status: "active" as const,
+    currentStage: 4, // distribution (0-indexed)
     completion: 87,
     participants: 142,
     reviewers: 568,
@@ -57,41 +73,79 @@ const allCycles = [
     dueDate: "28 Mar 2026",
     remindersEnabled: true,
     aiQuestions: true,
+    stageBreakdown: [
+      { stage: "Nomination", count: 0, total: 142 },
+      { stage: "AI Suggestions", count: 0, total: 142 },
+      { stage: "Manager Approval", count: 0, total: 142 },
+      { stage: "Distribution", count: 18, total: 142 },
+      { stage: "Collection", count: 124, total: 142 },
+      { stage: "Reporting", count: 0, total: 142 },
+    ],
+    sampleParticipants: [
+      { name: "Lerato Mokoena", initials: "LM", stage: "Collection", completion: 75 },
+      { name: "James van der Merwe", initials: "JM", stage: "Collection", completion: 100 },
+      { name: "David Chen", initials: "DC", stage: "Distribution", completion: 0 },
+      { name: "Priya Naidoo", initials: "PN", stage: "Collection", completion: 60 },
+    ],
   },
   {
     id: 2,
     name: "Engineering Team Review",
     description: "Quarterly peer feedback for engineering department",
     department: "Engineering",
-    status: "active",
-    completion: 64,
+    status: "active" as const,
+    currentStage: 2, // manager-approval
+    completion: 0,
     participants: 38,
     reviewers: 152,
     startDate: "15 Feb 2026",
     dueDate: "15 Apr 2026",
     remindersEnabled: true,
     aiQuestions: true,
+    stageBreakdown: [
+      { stage: "Nomination", count: 0, total: 38 },
+      { stage: "AI Suggestions", count: 0, total: 38 },
+      { stage: "Manager Approval", count: 26, total: 38 },
+      { stage: "Distribution", count: 12, total: 38 },
+      { stage: "Collection", count: 0, total: 38 },
+      { stage: "Reporting", count: 0, total: 38 },
+    ],
+    sampleParticipants: [
+      { name: "Sarah Williams", initials: "SW", stage: "Manager Approval", completion: 0 },
+      { name: "Thabo Sithole", initials: "TS", stage: "Distribution", completion: 0 },
+    ],
   },
   {
     id: 3,
     name: "New Manager Onboarding 360",
     description: "90-day check-in feedback for newly promoted managers",
     department: "Cross-functional",
-    status: "draft",
+    status: "draft" as const,
+    currentStage: 0,
     completion: 0,
     participants: 12,
-    reviewers: 48,
+    reviewers: 0,
     startDate: "01 May 2026",
     dueDate: "30 Jun 2026",
     remindersEnabled: false,
     aiQuestions: false,
+    stageBreakdown: [
+      { stage: "Nomination", count: 12, total: 12 },
+      { stage: "AI Suggestions", count: 0, total: 12 },
+      { stage: "Manager Approval", count: 0, total: 12 },
+      { stage: "Distribution", count: 0, total: 12 },
+      { stage: "Collection", count: 0, total: 12 },
+      { stage: "Reporting", count: 0, total: 12 },
+    ],
+    sampleParticipants: [],
   },
   {
     id: 4,
     name: "Q4 2025 All-Staff 360",
     description: "Company-wide 360 feedback cycle",
     department: "All Departments",
-    status: "completed",
+    status: "completed" as const,
+    currentStage: 5,
     completion: 94,
     participants: 1180,
     reviewers: 4720,
@@ -99,6 +153,15 @@ const allCycles = [
     dueDate: "15 Dec 2025",
     remindersEnabled: true,
     aiQuestions: true,
+    stageBreakdown: [
+      { stage: "Nomination", count: 0, total: 1180 },
+      { stage: "AI Suggestions", count: 0, total: 1180 },
+      { stage: "Manager Approval", count: 0, total: 1180 },
+      { stage: "Distribution", count: 0, total: 1180 },
+      { stage: "Collection", count: 0, total: 1180 },
+      { stage: "Reporting", count: 1180, total: 1180 },
+    ],
+    sampleParticipants: [],
   },
 ]
 
@@ -115,14 +178,64 @@ function StatusBadge({ status }: { status: string }) {
   )
 }
 
+function PipelineStepper({ currentStage, stageBreakdown }: { currentStage: number; stageBreakdown: typeof cycles[0]["stageBreakdown"] }) {
+  return (
+    <div className="mt-4">
+      {/* Stage dots/connector */}
+      <div className="flex items-center">
+        {pipelineStages.map((stage, index) => {
+          const isComplete = index < currentStage
+          const isCurrent = index === currentStage
+          const count = stageBreakdown[index]?.count || 0
+          return (
+            <div key={stage.id} className="flex flex-1 items-center">
+              <div className="flex flex-col items-center gap-1.5">
+                <div
+                  className={`flex size-8 items-center justify-center rounded-full border-2 transition-colors ${
+                    isComplete
+                      ? "border-success bg-success/10"
+                      : isCurrent
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-background"
+                  }`}
+                >
+                  {isComplete ? (
+                    <CheckCircle2 className="size-4 text-success" />
+                  ) : (
+                    <stage.icon className={`size-3.5 ${isCurrent ? "text-primary" : "text-muted-foreground/50"}`} />
+                  )}
+                </div>
+                <span className={`text-[10px] font-medium leading-tight text-center max-w-16 ${
+                  isComplete ? "text-success" : isCurrent ? "text-primary" : "text-muted-foreground/60"
+                }`}>
+                  {stage.label}
+                </span>
+                {count > 0 && (
+                  <Badge variant="outline" className="text-[9px] px-1 py-0 h-4">
+                    {count}
+                  </Badge>
+                )}
+              </div>
+              {index < pipelineStages.length - 1 && (
+                <div className={`mx-1 h-px flex-1 ${index < currentStage ? "bg-success" : "bg-border"}`} />
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 export default function CyclesPage() {
   const [showNewCycle, setShowNewCycle] = useState(false)
   const [selectedTab, setSelectedTab] = useState("all")
+  const [expandedCycle, setExpandedCycle] = useState<number | null>(1)
 
   const filtered =
     selectedTab === "all"
-      ? allCycles
-      : allCycles.filter((c) => c.status === selectedTab)
+      ? cycles
+      : cycles.filter((c) => c.status === selectedTab)
 
   return (
     <div className="p-6">
@@ -130,7 +243,7 @@ export default function CyclesPage() {
         <div>
           <h1 className="text-2xl font-bold text-foreground">Feedback Cycles</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Create, manage, and monitor your 360 feedback cycles.
+            Track each cycle through the 6-stage pipeline: nomination, AI suggestions, approval, distribution, collection, reporting.
           </p>
         </div>
         <Button
@@ -151,11 +264,15 @@ export default function CyclesPage() {
         </TabsList>
 
         <TabsContent value={selectedTab} className="mt-6">
-          <div className="grid gap-4">
+          <div className="flex flex-col gap-4">
             {filtered.map((cycle) => (
-              <Card key={cycle.id} className="border-border bg-card">
-                <CardContent className="p-6">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <Card key={cycle.id} className="border-border bg-card overflow-hidden">
+                <CardContent className="p-0">
+                  {/* Main row */}
+                  <button
+                    className="flex w-full flex-col gap-4 p-6 text-left lg:flex-row lg:items-center lg:justify-between"
+                    onClick={() => setExpandedCycle(expandedCycle === cycle.id ? null : cycle.id)}
+                  >
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
                         <h3 className="text-lg font-semibold text-card-foreground">
@@ -175,33 +292,42 @@ export default function CyclesPage() {
                       <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <Users className="size-3" />
-                          {cycle.participants} participants, {cycle.reviewers} reviewers
+                          {cycle.participants} participants
+                          {cycle.reviewers > 0 && `, ${cycle.reviewers} reviewers`}
                         </span>
                         <span className="flex items-center gap-1">
                           <Calendar className="size-3" />
                           {cycle.startDate} - {cycle.dueDate}
                         </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="size-3" />
-                          {cycle.remindersEnabled ? "Auto-reminders on" : "Reminders off"}
-                        </span>
+                        {cycle.remindersEnabled && (
+                          <span className="flex items-center gap-1">
+                            <Clock className="size-3" />
+                            Auto-reminders on
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <div className="flex items-center gap-2">
-                          <Progress value={cycle.completion} className="h-2 w-24" />
-                          <span className="text-sm font-mono font-medium text-card-foreground">
-                            {cycle.completion}%
-                          </span>
+                      {cycle.status === "active" && (
+                        <div className="text-right">
+                          <div className="flex items-center gap-2">
+                            <Progress value={cycle.completion} className="h-2 w-24" />
+                            <span className="text-sm font-mono font-medium text-card-foreground">
+                              {cycle.completion}%
+                            </span>
+                          </div>
+                          <p className="mt-1 text-xs text-muted-foreground">Completion</p>
                         </div>
-                        <p className="mt-1 text-xs text-muted-foreground">Completion</p>
-                      </div>
-
+                      )}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" aria-label="Cycle actions">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Cycle actions"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <MoreHorizontal className="size-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -225,7 +351,46 @@ export default function CyclesPage() {
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
-                  </div>
+                  </button>
+
+                  {/* Expanded Pipeline View */}
+                  {expandedCycle === cycle.id && (
+                    <div className="border-t border-border bg-muted/30 px-6 py-5">
+                      <PipelineStepper currentStage={cycle.currentStage} stageBreakdown={cycle.stageBreakdown} />
+
+                      {/* Participant cards */}
+                      {cycle.sampleParticipants.length > 0 && (
+                        <div className="mt-5">
+                          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                            Participant Status
+                          </p>
+                          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                            {cycle.sampleParticipants.map((p) => (
+                              <div
+                                key={p.name}
+                                className="flex items-center gap-3 rounded-lg border border-border bg-card p-3"
+                              >
+                                <Avatar className="size-8">
+                                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+                                    {p.initials}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium text-foreground truncate">{p.name}</p>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-[10px] text-muted-foreground">{p.stage}</span>
+                                    {p.completion > 0 && (
+                                      <span className="text-[10px] font-mono text-primary">{p.completion}%</span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}
@@ -239,7 +404,7 @@ export default function CyclesPage() {
           <DialogHeader>
             <DialogTitle>Create New Feedback Cycle</DialogTitle>
             <DialogDescription>
-              Set up a new 360 feedback cycle. AI will generate role-aware questions after creation.
+              Set up a new 360 feedback cycle. Employees will begin the nomination phase once launched.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-4">
@@ -281,11 +446,36 @@ export default function CyclesPage() {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Pipeline preview */}
+            <div className="rounded-lg border border-border bg-muted/50 p-4">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Workflow Pipeline
+              </p>
+              <div className="flex items-center gap-1">
+                {pipelineStages.map((stage, i) => (
+                  <div key={stage.id} className="flex flex-1 items-center">
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="flex size-6 items-center justify-center rounded-full border border-border bg-background">
+                        <stage.icon className="size-3 text-muted-foreground" />
+                      </div>
+                      <span className="text-[9px] text-muted-foreground text-center leading-tight max-w-14">
+                        {stage.label}
+                      </span>
+                    </div>
+                    {i < pipelineStages.length - 1 && (
+                      <ArrowRight className="mx-0.5 size-3 text-muted-foreground/30 shrink-0" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="flex items-center justify-between rounded-lg border border-border p-3">
               <div>
                 <p className="text-sm font-medium text-foreground">AI Question Generation</p>
                 <p className="text-xs text-muted-foreground">
-                  Automatically generate role-aware questions using AI
+                  Generate role-aware questions from job descriptions
                 </p>
               </div>
               <Switch defaultChecked />

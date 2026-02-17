@@ -21,7 +21,7 @@ export function CoMotionLogo({ className, variant = "default" }: { className?: s
           CoMotion
         </span>
         <span className="text-[10px] font-medium text-muted-foreground leading-none tracking-widest uppercase">
-          360
+          360 Feedback
         </span>
       </div>
     </div>
