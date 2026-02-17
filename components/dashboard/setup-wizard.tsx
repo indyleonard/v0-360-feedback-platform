@@ -22,7 +22,7 @@ const setupSteps = [
     description: "Link your M365 tenant for SSO and Graph API sync",
     icon: Shield,
     href: "/dashboard/settings",
-    completed: true,
+    completed: false,
   },
   {
     id: "org-sync",
@@ -30,7 +30,7 @@ const setupSteps = [
     description: "Pull reporting lines and teams from Microsoft Graph",
     icon: Network,
     href: "/dashboard/org-chart",
-    completed: true,
+    completed: false,
   },
   {
     id: "values",
