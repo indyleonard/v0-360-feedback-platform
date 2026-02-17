@@ -84,7 +84,7 @@ const slides: Slide[] = [
     description: "The org hierarchy is never manually maintained. It syncs from your M365 tenant automatically. When someone moves teams or gets a new manager, the chart updates on the next sync cycle. M365 is the single source of truth. Job descriptions are ingested from the employee profile or your linked SharePoint HR library.",
     visual: "detail",
     icon: Network,
-    accent: "chart-2",
+    accent: "chart-5",
     details: [
       "Zero manual org chart maintenance -- M365 is the single source of truth",
       "Automatic hierarchy updates on every sync cycle",
@@ -125,7 +125,7 @@ const slides: Slide[] = [
     description: "The AI reads each employee's job description, department context, seniority level, and your company values manifesto to generate targeted feedback questions. HR reviews and edits every question before it goes live. The AI also runs bias and tone checks on submitted feedback before it enters any report. Azure OpenAI is the default for data residency within your tenant.",
     visual: "detail",
     icon: Brain,
-    accent: "chart-2",
+    accent: "chart-4",
     details: [
       "Questions contextualised by role, JD, department, and seniority",
       "Company values manifesto alignment built into every question set",
@@ -274,10 +274,10 @@ function HeroVisual() {
 
 function PipelineVisual() {
   const stages = [
-    { name: "Nomination", desc: "Employee proposes reviewers", icon: ClipboardCheck, color: "bg-chart-1 text-card" },
-    { name: "AI Suggestions", desc: "System recommends based on interactions", icon: Brain, color: "bg-chart-2 text-card" },
-    { name: "Manager Approval", desc: "Direct manager finalises the list", icon: CheckCircle2, color: "bg-chart-4 text-card" },
-    { name: "Distribution", desc: "Questionnaires via email + Teams", icon: Send, color: "bg-primary text-primary-foreground" },
+    { name: "Nomination", desc: "Employee proposes reviewers", icon: ClipboardCheck, color: "bg-primary text-primary-foreground" },
+    { name: "AI Suggestions", desc: "System recommends based on interactions", icon: Brain, color: "bg-accent text-accent-foreground" },
+    { name: "Manager Approval", desc: "Direct manager finalises the list", icon: CheckCircle2, color: "bg-chart-4 text-primary-foreground" },
+    { name: "Distribution", desc: "Questionnaires via email + Teams", icon: Send, color: "bg-chart-5 text-primary-foreground" },
     { name: "Collection", desc: "Automated reminders chase completion", icon: Timer, color: "bg-warning text-warning-foreground" },
     { name: "Reporting", desc: "AI narratives + benchmarks delivered", icon: TrendingUp, color: "bg-success text-success-foreground" },
   ]
@@ -320,6 +320,7 @@ function DetailVisual({ slide }: { slide: DetailSlide }) {
     "chart-2": "border-chart-2/30 bg-chart-2/10 text-chart-2 shadow-chart-2/5",
     "chart-3": "border-chart-3/30 bg-chart-3/10 text-chart-3 shadow-chart-3/5",
     "chart-4": "border-chart-4/30 bg-chart-4/10 text-chart-4 shadow-chart-4/5",
+    "chart-5": "border-chart-5/30 bg-chart-5/10 text-chart-5 shadow-chart-5/5",
     warning: "border-warning/30 bg-warning/10 text-warning shadow-warning/5",
     success: "border-success/30 bg-success/10 text-success shadow-success/5",
   }
@@ -329,6 +330,7 @@ function DetailVisual({ slide }: { slide: DetailSlide }) {
     "chart-2": "text-chart-2",
     "chart-3": "text-chart-3",
     "chart-4": "text-chart-4",
+    "chart-5": "text-chart-5",
     warning: "text-warning",
     success: "text-success",
   }
@@ -542,6 +544,7 @@ export function FeatureWalkthrough() {
     "chart-2": "text-chart-2",
     "chart-3": "text-chart-3",
     "chart-4": "text-chart-4",
+    "chart-5": "text-chart-5",
     warning: "text-warning",
     success: "text-success",
   }

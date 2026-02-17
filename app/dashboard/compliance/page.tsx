@@ -78,13 +78,13 @@ export default function CompliancePage() {
           <CardContent className="flex flex-col items-center justify-center p-6">
             <div className="relative flex size-24 items-center justify-center">
               <svg className="absolute inset-0 size-full -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="oklch(0.91 0.006 210)" strokeWidth="6" />
+                <circle cx="50" cy="50" r="40" fill="none" stroke="var(--border)" strokeWidth="6" />
                 <circle
                   cx="50"
                   cy="50"
                   r="40"
                   fill="none"
-                  stroke="oklch(0.60 0.16 155)"
+                  stroke="var(--success)"
                   strokeWidth="6"
                   strokeDasharray={`${(complianceScore / 100) * 251} 251`}
                   strokeLinecap="round"

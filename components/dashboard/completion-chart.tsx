@@ -22,40 +22,41 @@ const data = [
 
 export function CompletionChart() {
   return (
-    <Card className="border-border bg-card">
-      <CardHeader>
-        <CardTitle className="text-card-foreground">Completion Rate by Department</CardTitle>
-        <CardDescription>Q1 2026 Leadership 360 Cycle</CardDescription>
+    <Card className="border-border/60 bg-card shadow-sm">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-semibold text-card-foreground">Completion by Department</CardTitle>
+        <CardDescription className="text-xs">Q1 2026 Leadership 360 Cycle</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="h-72">
+      <CardContent className="pt-2">
+        <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data}>
+            <AreaChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
               <defs>
                 <linearGradient id="colorEngineering" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="oklch(0.55 0.14 190)" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="oklch(0.55 0.14 190)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#da386d" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#da386d" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="colorMarketing" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="oklch(0.68 0.16 165)" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="oklch(0.68 0.16 165)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#09172b" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#09172b" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-              <XAxis dataKey="week" className="text-xs" tick={{ fill: "oklch(0.50 0.01 230)" }} />
-              <YAxis className="text-xs" tick={{ fill: "oklch(0.50 0.01 230)" }} domain={[0, 100]} unit="%" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e4e6ea" vertical={false} />
+              <XAxis dataKey="week" tick={{ fill: "#5c6578", fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: "#5c6578", fontSize: 11 }} domain={[0, 100]} unit="%" axisLine={false} tickLine={false} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "oklch(1 0 0)",
-                  border: "1px solid oklch(0.91 0.006 210)",
-                  borderRadius: "0.5rem",
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e4e6ea",
+                  borderRadius: "8px",
                   fontSize: "12px",
+                  boxShadow: "0 4px 12px rgba(9,23,43,0.08)",
                 }}
               />
               <Area
                 type="monotone"
                 dataKey="engineering"
-                stroke="oklch(0.55 0.14 190)"
+                stroke="#da386d"
                 fill="url(#colorEngineering)"
                 strokeWidth={2}
                 name="Engineering"
@@ -63,7 +64,7 @@ export function CompletionChart() {
               <Area
                 type="monotone"
                 dataKey="marketing"
-                stroke="oklch(0.68 0.16 165)"
+                stroke="#09172b"
                 fill="url(#colorMarketing)"
                 strokeWidth={2}
                 name="Marketing"
@@ -71,18 +72,18 @@ export function CompletionChart() {
               <Area
                 type="monotone"
                 dataKey="operations"
-                stroke="oklch(0.45 0.08 230)"
+                stroke="#5c6578"
                 fill="transparent"
-                strokeWidth={2}
+                strokeWidth={1.5}
                 strokeDasharray="4 4"
                 name="Operations"
               />
               <Area
                 type="monotone"
                 dataKey="finance"
-                stroke="oklch(0.75 0.12 180)"
+                stroke="#e85d8a"
                 fill="transparent"
-                strokeWidth={2}
+                strokeWidth={1.5}
                 strokeDasharray="4 4"
                 name="Finance"
               />

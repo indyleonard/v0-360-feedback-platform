@@ -1,48 +1,47 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
 const stages = [
-  { name: "Nomination", count: 8, color: "bg-chart-1" },
-  { name: "AI Suggestions", count: 5, color: "bg-chart-2" },
-  { name: "Manager Approval", count: 12, color: "bg-chart-4" },
+  { name: "Nomination", count: 8, color: "bg-primary" },
+  { name: "AI Suggest", count: 5, color: "bg-chart-4" },
+  { name: "Approval", count: 12, color: "bg-accent" },
   { name: "Live", count: 117, color: "bg-success" },
-  { name: "Completed", count: 1180, color: "bg-chart-3" },
+  { name: "Complete", count: 1180, color: "bg-chart-3" },
 ]
 
 const total = stages.reduce((acc, s) => acc + s.count, 0)
 
 export function PipelineSummary() {
   return (
-    <Card className="border-border bg-card">
+    <Card className="border-border/60 bg-card shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-card-foreground">Feedback Pipeline</CardTitle>
-            <CardDescription>Employee progress across the 360 workflow stages</CardDescription>
+            <CardTitle className="text-sm font-semibold text-card-foreground">Feedback Pipeline</CardTitle>
+            <CardDescription className="text-xs">Employee progress across workflow stages</CardDescription>
           </div>
           <Link
             href="/dashboard/cycles"
-            className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+            className="flex items-center gap-1 text-[11px] font-medium text-primary hover:text-primary/80 transition-colors"
           >
-            View cycles
+            View all
             <ArrowRight className="size-3" />
           </Link>
         </div>
       </CardHeader>
       <CardContent>
-        {/* Visual pipeline bar */}
-        <div className="mb-4 flex h-3 overflow-hidden rounded-full bg-muted">
+        {/* Visual bar */}
+        <div className="mb-5 flex h-2.5 overflow-hidden rounded-full bg-muted">
           {stages.map((stage) => {
             const pct = (stage.count / total) * 100
             if (pct < 0.5) return null
             return (
               <div
                 key={stage.name}
-                className={`${stage.color} transition-all duration-500`}
+                className={`${stage.color} first:rounded-l-full last:rounded-r-full transition-all duration-500`}
                 style={{ width: `${pct}%` }}
                 title={`${stage.name}: ${stage.count}`}
               />
@@ -50,15 +49,15 @@ export function PipelineSummary() {
           })}
         </div>
 
-        {/* Stage breakdown */}
-        <div className="grid grid-cols-5 gap-2">
+        {/* Stage counts */}
+        <div className="grid grid-cols-5 gap-1">
           {stages.map((stage) => (
-            <div key={stage.name} className="text-center">
-              <div className="flex items-center justify-center gap-1.5">
-                <div className={`size-2 rounded-full ${stage.color}`} />
-                <span className="text-lg font-bold text-card-foreground">{stage.count}</span>
+            <div key={stage.name} className="flex flex-col items-center gap-1 rounded-lg py-2 transition-colors hover:bg-muted/50">
+              <div className="flex items-center gap-1.5">
+                <div className={`size-1.5 rounded-full ${stage.color}`} />
+                <span className="text-base font-bold tabular-nums text-card-foreground">{stage.count}</span>
               </div>
-              <p className="mt-0.5 text-[10px] font-medium text-muted-foreground leading-tight">
+              <p className="text-[10px] font-medium text-muted-foreground leading-tight text-center">
                 {stage.name}
               </p>
             </div>

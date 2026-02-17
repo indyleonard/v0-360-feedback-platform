@@ -38,15 +38,13 @@ const cycles = [
 ]
 
 function StatusBadge({ status }: { status: string }) {
-  const variants: Record<string, string> = {
+  const styles: Record<string, string> = {
     active: "bg-success/10 text-success border-success/20",
     draft: "bg-muted text-muted-foreground border-border",
     completed: "bg-primary/10 text-primary border-primary/20",
-    closed: "bg-muted text-muted-foreground border-border",
   }
-
   return (
-    <Badge variant="outline" className={variants[status] || variants.draft}>
+    <Badge variant="outline" className={`text-[11px] font-medium ${styles[status] || styles.draft}`}>
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </Badge>
   )
@@ -54,49 +52,47 @@ function StatusBadge({ status }: { status: string }) {
 
 export function ActiveCyclesTable() {
   return (
-    <Card className="border-border bg-card">
-      <CardHeader>
-        <CardTitle className="text-card-foreground">Active Feedback Cycles</CardTitle>
-        <CardDescription>Currently running and upcoming cycles</CardDescription>
+    <Card className="border-border/60 bg-card shadow-sm">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm font-semibold text-card-foreground">Active Cycles</CardTitle>
+        <CardDescription className="text-xs">Running and upcoming feedback cycles</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Cycle Name</TableHead>
-              <TableHead className="hidden sm:table-cell">Department</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Completion</TableHead>
-              <TableHead className="hidden md:table-cell">Due Date</TableHead>
+            <TableRow className="border-border/60 hover:bg-transparent">
+              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Cycle</TableHead>
+              <TableHead className="hidden text-[11px] font-semibold uppercase tracking-wider text-muted-foreground sm:table-cell">Dept</TableHead>
+              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Status</TableHead>
+              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Progress</TableHead>
+              <TableHead className="hidden text-[11px] font-semibold uppercase tracking-wider text-muted-foreground md:table-cell">Due</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {cycles.map((cycle) => (
-              <TableRow key={cycle.name}>
+              <TableRow key={cycle.name} className="border-border/40 hover:bg-muted/30 cursor-pointer transition-colors">
                 <TableCell>
                   <div>
-                    <p className="font-medium text-foreground">{cycle.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {cycle.participants} participants
-                    </p>
+                    <p className="text-[13px] font-medium text-foreground">{cycle.name}</p>
+                    <p className="text-[11px] text-muted-foreground">{cycle.participants} participants</p>
                   </div>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  <span className="text-sm text-muted-foreground">{cycle.department}</span>
+                  <span className="text-[13px] text-muted-foreground">{cycle.department}</span>
                 </TableCell>
                 <TableCell>
                   <StatusBadge status={cycle.status} />
                 </TableCell>
                 <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Progress value={cycle.completion} className="h-2 w-16" />
-                    <span className="text-xs text-muted-foreground font-mono">
+                  <div className="flex items-center gap-2.5">
+                    <Progress value={cycle.completion} className="h-1.5 w-16" />
+                    <span className="text-[11px] font-mono tabular-nums text-muted-foreground">
                       {cycle.completion}%
                     </span>
                   </div>
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
-                  <span className="text-sm text-muted-foreground">{cycle.dueDate}</span>
+                  <span className="text-[13px] text-muted-foreground">{cycle.dueDate}</span>
                 </TableCell>
               </TableRow>
             ))}

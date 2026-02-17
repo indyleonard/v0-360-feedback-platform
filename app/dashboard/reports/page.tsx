@@ -259,13 +259,13 @@ export default function ReportsPage() {
                   <div className="flex items-center justify-center">
                     <div className="relative flex size-32 items-center justify-center">
                       <svg className="absolute inset-0 size-full -rotate-90" viewBox="0 0 120 120">
-                        <circle cx="60" cy="60" r="50" fill="none" stroke="oklch(0.91 0.006 210)" strokeWidth="8" />
+                        <circle cx="60" cy="60" r="50" fill="none" stroke="#e4e6ea" strokeWidth="8" />
                         <circle
                           cx="60"
                           cy="60"
                           r="50"
                           fill="none"
-                          stroke="oklch(0.55 0.14 190)"
+                          stroke="#da386d"
                           strokeWidth="8"
                           strokeDasharray={`${(aiNarrative.benchmarkPercentile / 100) * 314} 314`}
                           strokeLinecap="round"
@@ -334,20 +334,21 @@ export default function ReportsPage() {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={competencyData} layout="vertical">
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                      <XAxis type="number" domain={[0, 5]} tick={{ fill: "oklch(0.50 0.01 230)", fontSize: 12 }} />
-                      <YAxis type="category" dataKey="competency" width={100} tick={{ fill: "oklch(0.50 0.01 230)", fontSize: 12 }} />
+                      <XAxis type="number" domain={[0, 5]} tick={{ fill: "#5c6578", fontSize: 12 }} />
+                      <YAxis type="category" dataKey="competency" width={100} tick={{ fill: "#5c6578", fontSize: 12 }} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: "oklch(1 0 0)",
-                          border: "1px solid oklch(0.91 0.006 210)",
-                          borderRadius: "0.5rem",
+                          backgroundColor: "#ffffff",
+                          border: "1px solid #e4e6ea",
+                          borderRadius: "8px",
                           fontSize: "12px",
+                          boxShadow: "0 4px 12px rgba(9,23,43,0.08)",
                         }}
                       />
                       <Legend wrapperStyle={{ fontSize: "12px" }} />
-                      <Bar dataKey="self" fill="oklch(0.55 0.14 190)" name="Self" radius={[0, 2, 2, 0]} />
-                      <Bar dataKey="peers" fill="oklch(0.68 0.16 165)" name="Peers" radius={[0, 2, 2, 0]} />
-                      <Bar dataKey="reports" fill="oklch(0.75 0.12 180)" name="Direct Reports" radius={[0, 2, 2, 0]} />
+                      <Bar dataKey="self" fill="#da386d" name="Self" radius={[0, 2, 2, 0]} />
+                      <Bar dataKey="peers" fill="#09172b" name="Peers" radius={[0, 2, 2, 0]} />
+                      <Bar dataKey="reports" fill="#e85d8a" name="Direct Reports" radius={[0, 2, 2, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -371,17 +372,18 @@ export default function ReportsPage() {
                   <ResponsiveContainer width="100%" height="100%">
                     <RadarChart data={radarData}>
                       <PolarGrid className="stroke-border" />
-                      <PolarAngleAxis dataKey="subject" tick={{ fill: "oklch(0.50 0.01 230)", fontSize: 11 }} />
-                      <PolarRadiusAxis domain={[0, 5]} tick={{ fill: "oklch(0.50 0.01 230)", fontSize: 10 }} />
-                      <Radar name="Actual" dataKey="A" stroke="oklch(0.55 0.14 190)" fill="oklch(0.55 0.14 190)" fillOpacity={0.3} />
-                      <Radar name="Benchmark" dataKey="B" stroke="oklch(0.68 0.16 165)" fill="oklch(0.68 0.16 165)" fillOpacity={0.1} strokeDasharray="4 4" />
+                      <PolarAngleAxis dataKey="subject" tick={{ fill: "#5c6578", fontSize: 11 }} />
+                      <PolarRadiusAxis domain={[0, 5]} tick={{ fill: "#5c6578", fontSize: 10 }} />
+                      <Radar name="Actual" dataKey="A" stroke="#da386d" fill="#da386d" fillOpacity={0.25} />
+                      <Radar name="Benchmark" dataKey="B" stroke="#09172b" fill="#09172b" fillOpacity={0.08} strokeDasharray="4 4" />
                       <Legend wrapperStyle={{ fontSize: "12px" }} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: "oklch(1 0 0)",
-                          border: "1px solid oklch(0.91 0.006 210)",
-                          borderRadius: "0.5rem",
+                          backgroundColor: "#ffffff",
+                          border: "1px solid #e4e6ea",
+                          borderRadius: "8px",
                           fontSize: "12px",
+                          boxShadow: "0 4px 12px rgba(9,23,43,0.08)",
                         }}
                       />
                     </RadarChart>
