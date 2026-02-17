@@ -241,33 +241,26 @@ const slides: Slide[] = [
 // ─── Micro-illustrations ──────────────────────────────────────
 
 function HeroVisual() {
-  const tags = ["Azure AD SSO", "Graph API Sync", "AI Questions", "POPIA/GDPR", "Anonymous Feedback", "Audit Trail"]
+  const capabilities = [
+    { label: "Azure AD SSO", desc: "Single sign-on via Entra ID" },
+    { label: "Graph API Sync", desc: "Live org chart from M365" },
+    { label: "AI Questions", desc: "Role-aware, bias-checked" },
+    { label: "POPIA / GDPR", desc: "Privacy-first by design" },
+    { label: "Anonymous Feedback", desc: "Always-on signature links" },
+    { label: "Audit Trail", desc: "Full access logging" },
+  ]
   return (
-    <div className="flex flex-col items-center gap-8">
-      {/* Animated logo mark */}
-      <div className="relative">
-        <div className="absolute -inset-6 animate-[ping_3s_ease-in-out_infinite] rounded-3xl bg-primary/10" />
-        <div className="absolute -inset-3 animate-[pulse_2s_ease-in-out_infinite] rounded-2xl bg-primary/15" />
-        <div className="relative flex size-24 items-center justify-center rounded-2xl border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-primary/5 shadow-lg shadow-primary/10">
-          <div className="flex flex-col items-center">
-            <span className="text-2xl font-black text-primary tracking-tighter">Co</span>
-            <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-primary/60">360</span>
-          </div>
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      {capabilities.map((cap, i) => (
+        <div
+          key={cap.label}
+          className="flex flex-col gap-1 rounded-xl border border-border/60 bg-muted/30 p-3 animate-[fadeSlideUp_0.4s_ease-out_both]"
+          style={{ animationDelay: `${i * 60}ms` }}
+        >
+          <span className="text-xs font-semibold text-foreground">{cap.label}</span>
+          <span className="text-[11px] leading-snug text-muted-foreground">{cap.desc}</span>
         </div>
-      </div>
-      {/* Capability tags */}
-      <div className="flex max-w-md flex-wrap items-center justify-center gap-2">
-        {tags.map((tag, i) => (
-          <Badge
-            key={tag}
-            variant="outline"
-            className="animate-[fadeSlideUp_0.5s_ease-out_both] border-primary/20 bg-primary/5 text-primary text-xs"
-            style={{ animationDelay: `${i * 80}ms` }}
-          >
-            {tag}
-          </Badge>
-        ))}
-      </div>
+      ))}
     </div>
   )
 }
@@ -282,25 +275,25 @@ function PipelineVisual() {
     { name: "Reporting", desc: "AI narratives + benchmarks delivered", icon: TrendingUp, color: "bg-success text-success-foreground" },
   ]
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-0.5">
       {stages.map((stage, i) => (
         <div
           key={stage.name}
-          className="group flex items-center gap-4 rounded-xl p-3 transition-colors hover:bg-muted/50 animate-[fadeSlideUp_0.4s_ease-out_both]"
-          style={{ animationDelay: `${i * 70}ms` }}
+          className="group flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted/50 animate-[fadeSlideUp_0.4s_ease-out_both]"
+          style={{ animationDelay: `${i * 60}ms` }}
         >
           <div className="relative flex flex-col items-center">
-            <div className={cn("flex size-10 items-center justify-center rounded-xl shadow-sm", stage.color)}>
-              <stage.icon className="size-5" />
+            <div className={cn("flex size-8 items-center justify-center rounded-lg shadow-sm", stage.color)}>
+              <stage.icon className="size-4" />
             </div>
             {i < stages.length - 1 && (
-              <div className="mt-1 h-3 w-px bg-border" />
+              <div className="mt-0.5 h-2 w-px bg-border" />
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wide text-muted-foreground/50">{`0${i + 1}`}</span>
-              <p className="text-sm font-semibold text-foreground">{stage.name}</p>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground/50">{`0${i + 1}`}</span>
+              <p className="text-[13px] font-semibold text-foreground">{stage.name}</p>
             </div>
             <p className="text-xs text-muted-foreground">{stage.desc}</p>
           </div>
@@ -339,19 +332,19 @@ function DetailVisual({ slide }: { slide: DetailSlide }) {
   const Icon = slide.icon
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className={cn("mx-auto flex size-16 items-center justify-center rounded-2xl border shadow-lg animate-[scaleIn_0.3s_ease-out]", iconStyle)}>
-        <Icon className="size-8" />
+    <div className="flex flex-col gap-4">
+      <div className={cn("mx-auto flex size-11 items-center justify-center rounded-xl border shadow-md animate-[scaleIn_0.3s_ease-out]", iconStyle)}>
+        <Icon className="size-5" />
       </div>
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-2">
         {slide.details.map((detail, i) => (
           <div
             key={i}
-            className="flex items-start gap-3 rounded-lg border border-border/50 bg-card p-3 shadow-sm animate-[fadeSlideUp_0.4s_ease-out_both]"
+            className="flex items-start gap-2.5 rounded-lg border border-border/50 bg-card p-2.5 shadow-sm animate-[fadeSlideUp_0.4s_ease-out_both]"
             style={{ animationDelay: `${100 + i * 60}ms` }}
           >
-            <CheckCircle2 className={cn("mt-0.5 size-4 shrink-0", checkStyle)} />
-            <span className="text-sm leading-relaxed text-foreground/80">{detail}</span>
+            <CheckCircle2 className={cn("mt-0.5 size-3.5 shrink-0", checkStyle)} />
+            <span className="text-[13px] leading-relaxed text-foreground/80">{detail}</span>
           </div>
         ))}
       </div>
@@ -361,24 +354,24 @@ function DetailVisual({ slide }: { slide: DetailSlide }) {
 
 function DeliverablesVisual({ slide }: { slide: DeliverablesSlide }) {
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col gap-1.5">
       {slide.deliverables.map((d, i) => (
         <div
           key={i}
-          className="group flex gap-3.5 rounded-xl border border-border bg-card p-3.5 shadow-sm transition-all hover:border-success/30 hover:shadow-md animate-[fadeSlideUp_0.4s_ease-out_both]"
-          style={{ animationDelay: `${i * 60}ms` }}
+          className="group flex gap-3 rounded-lg border border-border bg-card p-2.5 shadow-sm transition-all hover:border-success/30 animate-[fadeSlideUp_0.35s_ease-out_both]"
+          style={{ animationDelay: `${i * 50}ms` }}
         >
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-success/10 text-success transition-colors group-hover:bg-success group-hover:text-success-foreground">
-            <d.icon className="size-4" />
+          <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-success/10 text-success transition-colors group-hover:bg-success group-hover:text-success-foreground">
+            <d.icon className="size-3.5" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-semibold text-foreground">{d.item}</p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[13px] font-semibold text-foreground">{d.item}</p>
+              <span className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                {d.effort}
+              </span>
             </div>
-            <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{d.detail}</p>
-            <span className="mt-1.5 inline-block rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-              {d.effort}
-            </span>
+            <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{d.detail}</p>
           </div>
         </div>
       ))}
@@ -388,18 +381,18 @@ function DeliverablesVisual({ slide }: { slide: DeliverablesSlide }) {
 
 function SuccessVisual({ slide }: { slide: SuccessSlide }) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2">
       {slide.criteria.map((c, i) => (
         <div
           key={i}
-          className="flex items-start gap-3.5 rounded-xl border border-success/20 bg-success/[0.03] p-4 animate-[fadeSlideUp_0.4s_ease-out_both]"
-          style={{ animationDelay: `${i * 80}ms` }}
+          className="flex items-start gap-3 rounded-lg border border-success/20 bg-success/[0.03] p-3 animate-[fadeSlideUp_0.35s_ease-out_both]"
+          style={{ animationDelay: `${i * 60}ms` }}
         >
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-success/10">
-            <CheckCircle2 className="size-4 text-success" />
+          <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-success/10">
+            <CheckCircle2 className="size-3.5 text-success" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-foreground">{c.metric}</p>
+            <p className="text-[13px] font-semibold text-foreground">{c.metric}</p>
             <p className="mt-0.5 text-xs text-muted-foreground">{c.target}</p>
           </div>
         </div>
@@ -410,21 +403,21 @@ function SuccessVisual({ slide }: { slide: SuccessSlide }) {
 
 function CTAVisual({ slide }: { slide: CTASlide }) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2">
       {slide.nextSteps.map((s, i) => (
         <div
           key={s.step}
-          className="flex items-center gap-4 rounded-xl border border-primary/20 bg-primary/[0.03] p-4 animate-[fadeSlideUp_0.4s_ease-out_both]"
-          style={{ animationDelay: `${i * 80}ms` }}
+          className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/[0.03] p-3 animate-[fadeSlideUp_0.35s_ease-out_both]"
+          style={{ animationDelay: `${i * 60}ms` }}
         >
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-bold shadow-md shadow-primary/20">
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-sm shadow-primary/20">
             {s.step}
           </div>
-          <p className="text-sm font-medium leading-relaxed text-foreground">{s.label}</p>
+          <p className="text-[13px] font-medium leading-snug text-foreground">{s.label}</p>
         </div>
       ))}
-      <div className="mt-3 rounded-xl border border-border bg-muted/30 p-4 text-center animate-[fadeSlideUp_0.4s_ease-out_both]" style={{ animationDelay: "400ms" }}>
-        <p className="text-sm leading-relaxed text-muted-foreground italic">
+      <div className="mt-2 rounded-lg border border-border bg-muted/30 p-3 text-center animate-[fadeSlideUp_0.35s_ease-out_both]" style={{ animationDelay: "300ms" }}>
+        <p className="text-xs leading-relaxed text-muted-foreground italic">
           {slide.contactNote}
         </p>
       </div>
@@ -596,8 +589,8 @@ export function FeatureWalkthrough() {
 
         {/* Main card */}
         <div
-          className="relative mx-3 flex w-full max-w-4xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl md:mx-6"
-          style={{ maxHeight: "min(92vh, 780px)", animation: "cardIn 0.4s ease-out" }}
+          className="relative mx-3 flex h-[min(90vh,720px)] w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl md:mx-6"
+          style={{ animation: "cardIn 0.4s ease-out" }}
         >
           {/* Top progress bar */}
           <div className="absolute left-0 right-0 top-0 z-10 h-0.5 bg-muted">
@@ -618,7 +611,7 @@ export function FeatureWalkthrough() {
           {/* Right content area */}
           <div className="flex flex-1 flex-col min-w-0">
             {/* Mobile top bar */}
-            <div className="flex items-center justify-between border-b border-border px-5 pt-5 pb-3 md:px-8 md:pt-6">
+            <div className="flex items-center justify-between border-b border-border px-5 pt-4 pb-2.5 md:px-7 md:pt-4">
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className={cn("text-[10px] font-semibold uppercase tracking-wider", accentText[slide.accent])}>
                   {slide.category}
@@ -630,21 +623,21 @@ export function FeatureWalkthrough() {
             </div>
 
             {/* Scrollable content */}
-            <div ref={contentRef} className="flex-1 overflow-y-auto px-5 py-6 md:px-8 md:py-8">
+            <div ref={contentRef} className="flex-1 overflow-y-auto px-5 py-4 md:px-7 md:py-5">
               <div
                 key={slide.id}
                 className={cn("mx-auto max-w-lg", isAnimating ? "slide-exit" : "slide-enter")}
               >
                 {/* Title section */}
-                <div className="mb-8">
-                  <h2 className="text-2xl font-bold tracking-tight text-balance text-foreground md:text-3xl">
+                <div className="mb-5">
+                  <h2 className="text-xl font-bold tracking-tight text-balance text-foreground md:text-2xl">
                     {slide.title}
                   </h2>
-                  <p className={cn("mt-3 text-sm font-medium leading-relaxed md:text-base", accentText[slide.accent])}>
+                  <p className={cn("mt-2 text-sm font-medium leading-relaxed", accentText[slide.accent])}>
                     {slide.subtitle}
                   </p>
                   {slide.description && (
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
                       {slide.description}
                     </p>
                   )}
@@ -656,7 +649,7 @@ export function FeatureWalkthrough() {
             </div>
 
             {/* Bottom navigation */}
-            <div className="flex items-center justify-between border-t border-border px-5 py-3 md:px-8 md:py-4">
+            <div className="flex items-center justify-between border-t border-border px-5 py-2.5 md:px-7 md:py-3">
               {/* Dot indicators (mobile) + slide counter */}
               <div className="flex items-center gap-1 md:hidden">
                 {slides.map((_, i) => (
