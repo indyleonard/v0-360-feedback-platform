@@ -1,0 +1,19 @@
+reviews:
+  instructions: |
+    This codebase is a feedback platform handling South African HR data subject to POPIA.
+    
+    Flag any of the following:
+    - Personal information (names, emails, employment data, IDs) stored or logged in plaintext
+    - Missing input validation or sanitization on form fields
+    - API calls that transmit personal data without HTTPS enforcement
+    - Hardcoded credentials, API keys, or secrets
+    - Missing error boundaries that could expose stack traces to users
+    - Third-party libraries with known CVEs
+    - Components that collect user data without visible consent mechanisms
+    - Any data sent to external services that may fall outside South Africa's data residency requirements
+    
+    Code quality:
+    - TypeScript type safety violations or excessive use of `any`
+    - Unhandled promise rejections
+    - Missing loading and error states in async operations
+    - Accessibility issues on form elements
